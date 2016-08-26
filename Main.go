@@ -1,15 +1,16 @@
 package main
 
 import (
+	"com.sinlov/Golang-Android-Remote-Control/server"
 	"flag"
 	"log"
 	"net/http"
-	"com.sinlov/Golang-Android-Remote-Control/server"
 	"os/exec"
 )
 
 func main() {
-	start_sever()
+	// start_sever()
+	start_comamd()
 }
 
 func start_sever() {
