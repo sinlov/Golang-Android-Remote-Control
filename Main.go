@@ -5,20 +5,22 @@ import (
 	"log"
 	"net/http"
 	"com.sinlov/Golang-Android-Remote-Control/server"
+	"com.sinlov/Golang-Android-Remote-Control/test"
 	"os/exec"
 )
 
 func main() {
-	start_sever()
+	server.Start_ws_server()
+	//start_sever()
 }
 
 func start_sever() {
 	flag.Parse()
 	log.SetFlags(0)
-	server.InitServer()
-	http.HandleFunc("/echo", server.Echo)
-	http.HandleFunc("/", server.Home)
-	log.Fatal(http.ListenAndServe(*server.Addr, nil))
+	test.InitServer()
+	http.HandleFunc("/echo", test.Echo)
+	http.HandleFunc("/", test.Home)
+	log.Fatal(http.ListenAndServe(*test.Addr, nil))
 }
 
 func start_comamd() {
@@ -31,8 +33,8 @@ func start_comamd() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	server.InitCommand(cmdPath)
-	http.HandleFunc("/", server.ServeHome)
-	http.HandleFunc("/ws", server.ServeWs)
-	log.Fatal(http.ListenAndServe(*server.Command_addr, nil))
+	test.InitCommand(cmdPath)
+	http.HandleFunc("/", test.ServeHome)
+	http.HandleFunc("/ws", test.ServeWs)
+	log.Fatal(http.ListenAndServe(*test.Command_addr, nil))
 }
