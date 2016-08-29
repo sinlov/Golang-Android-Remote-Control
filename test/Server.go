@@ -1,4 +1,4 @@
-package server
+package test
 
 import (
 	"com.sinlov/Golang-Android-Remote-Control/conf"

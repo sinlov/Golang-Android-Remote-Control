@@ -1,4 +1,4 @@
-package server
+package test
 
 import (
 	"bufio"
@@ -18,7 +18,7 @@ import (
 var (
 	Command_addr *string
 	cmdPath string
-	homeTempl = template.Must(template.ParseFiles("server/home.html"))
+	homeTempl = template.Must(template.ParseFiles("test/home.html"))
 )
 
 var command_upgrader = websocket.Upgrader{}
