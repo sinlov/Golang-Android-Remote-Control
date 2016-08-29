@@ -9,8 +9,8 @@ import (
 )
 
 func main() {
-	// start_sever()
-	start_comamd()
+	start_sever()
+	// start_comamd()
 }
 
 func start_sever() {

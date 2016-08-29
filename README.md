@@ -28,3 +28,6 @@ func main() {
 ```sh
 go run Main.go
 ```
+
+#dark websocket
+/connect ws://127.0.0.1:18080/echo

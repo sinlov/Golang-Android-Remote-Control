@@ -1,18 +1,20 @@
 package server
 
 import (
+	"com.sinlov/Golang-Android-Remote-Control/conf"
 	"flag"
+	"fmt"
+	"github.com/gorilla/websocket"
 	"html/template"
 	"log"
 	"net/http"
-	"github.com/gorilla/websocket"
-	"fmt"
-	"com.sinlov/Golang-Android-Remote-Control/conf"
 )
 
 var Addr *string
 
-var server_upgrader = websocket.Upgrader{} // use default options
+var server_upgrader = websocket.Upgrader{CheckOrigin: func(r *http.Request) bool {
+	return true
+}}
 
 func InitServer() {
 	config := new(conf.Config)
