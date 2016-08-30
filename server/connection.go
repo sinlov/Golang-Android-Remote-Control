@@ -11,6 +11,9 @@ type connection struct {
 
 	// 发送信息的缓冲 channel
 	send chan []byte
+
+	// The hub.
+	h    *hub
 }
 
 func (c *connection) reader() {
@@ -19,7 +22,7 @@ func (c *connection) reader() {
 		if err != nil {
 			break
 		}
-		h.broadcast <- message
+		c.h.broadcast <- message
 	}
 	c.ws.Close()
 }
@@ -34,17 +37,25 @@ func (c *connection) writer() {
 	c.ws.Close()
 }
 
-var ws_upgrader = &websocket.Upgrader{ReadBufferSize: 1024, WriteBufferSize: 1024}
+var ws_upgrader = &websocket.Upgrader{
+	ReadBufferSize: 1024,
+	WriteBufferSize: 1024, CheckOrigin: func(r *http.Request) bool {
+		return true
+	}}
 
-func wsHandler(w http.ResponseWriter, r *http.Request) {
+type wsHandler struct {
+	h *hub
+}
+
+func (wsh wsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ws, err := ws_upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		return
 	}
-	c := &connection{send: make(chan []byte, 256), ws: ws}
-	h.register <- c
+	c := &connection{send: make(chan []byte, 256), ws: ws, h: wsh.h}
+	c.h.register <- c
 	defer func() {
-		h.unregister <- c
+		c.h.unregister <- c
 	}()
 	go c.writer()
 	c.reader()

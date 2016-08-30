@@ -5,20 +5,22 @@ type hub struct {
 	connections map[*connection]bool
 
 	// 从连接器中发入的信息
-	broadcast chan []byte
+	broadcast   chan []byte
 
 	// 从连接器中注册请求
-	register chan *connection
+	register    chan *connection
 
 	// 从连接器中注销请求
-	unregister chan *connection
+	unregister  chan *connection
 }
 
-var h = hub{
-	broadcast:   make(chan []byte),
-	register:    make(chan *connection),
-	unregister:  make(chan *connection),
-	connections: make(map[*connection]bool),
+func newHub() *hub {
+	return &hub{
+		connections:        make(map[*connection]bool),
+		broadcast:                make(chan []byte),
+		register:                make(chan *connection),
+		unregister:        make(chan *connection),
+	}
 }
 
 func (h *hub) run() {

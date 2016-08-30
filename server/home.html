@@ -29,7 +29,7 @@
                 return false
             });
             if (window["WebSocket"]) {
-                conn = new WebSocket("ws://{{$}}/ws");
+                conn = new WebSocket("ws://{{$}}/");
                 conn.onclose = function (evt) {
                     appendLog($("<div><b>Connection closed.</b></div>"))
                 }

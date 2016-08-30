@@ -6,19 +6,20 @@ import (
 	"log"
 	"net/http"
 	"os/exec"
+	"com.sinlov/Golang-Android-Remote-Control/server"
 )
 
 func main() {
-	//server.Start_ws_server()
-	start_sever()
+	server.Start_ws_server()
+	//start_sever()
 }
 
 func start_sever() {
 	flag.Parse()
 	log.SetFlags(0)
 	test.InitServer()
-	http.HandleFunc("/echo", test.Echo)
-	http.HandleFunc("/", test.Home)
+	http.HandleFunc("/", test.Echo)
+	http.HandleFunc("/home", test.Home)
 	log.Fatal(http.ListenAndServe(*test.Addr, nil))
 }
 
