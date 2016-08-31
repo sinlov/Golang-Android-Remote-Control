@@ -30,9 +30,18 @@ func main() {
 go run Main.go
 ```
 
-# Web
+# Connect
+
+## Web
 
 http://youdaemon:yourport/home
 
-#dark websocket
-/connect ws://127.0.0.1:18080
+## dark websocket or other client
+/connect ws://youdaemon:yourport
+
+
+# Use cli
+
+```sh
+go run cli.go
+```

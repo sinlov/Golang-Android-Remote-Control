@@ -33,6 +33,10 @@ func (c *connection) writer() {
 		if err != nil {
 			break
 		}
+		b_err := c.ws.WriteMessage(websocket.BinaryMessage, message)
+		if b_err != nil {
+			break
+		}
 	}
 	c.ws.Close()
 }
