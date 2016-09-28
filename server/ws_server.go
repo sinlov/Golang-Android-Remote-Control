@@ -15,6 +15,8 @@ var (
 	ws_addr *string
 	assets = flag.String("assets", defaultAssetPath(), "path to assets")
 	homeTempl *template.Template
+	daemon string
+	port string
 )
 
 func defaultAssetPath() string {
@@ -25,24 +27,66 @@ func defaultAssetPath() string {
 	return p.Dir
 }
 
-func homeHandler(c http.ResponseWriter, req *http.Request) {
-	homeTempl.Execute(c, req.Host)
+func homeHandler(w http.ResponseWriter, req *http.Request) {
+
+
+	if req.URL.Path == "/" {
+		http.Error(w, "404 Not found", 404)
+		return
+	}
+	if req.Method != "GET" {
+		http.Error(w, "405 Method not allowed", 405)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	homeTempl.Execute(w, req.Host)
 }
 
-func Start_ws_server() {
-	config := new(conf.Config)
-	config.InitConfig("conf/config.conf")
-	daemon := config.Read("ServerSet", "daemon")
-	port := config.Read("ServerSet", "port")
-	fmt.Println("ws_server Init with: ", daemon, ":", port)
+func Start_ws_server_by_router(routerSet string, htmlFilePath string) {
+	if "" == daemon || "" == port {
+		config := new(conf.Config)
+		config.InitConfig("conf/config.conf")
+		daemon = config.Read("ServerSet", "daemon")
+		port = config.Read("ServerSet", "port")
+	}
+	fmt.Println("WebSocket server Init with: ", daemon, ":", port)
 	ws_addr = flag.String("addr", daemon + ":" + port, "http service address")
 	flag.Parse()
-	homeTempl = template.Must(template.ParseFiles(filepath.Join(*assets, "server/home.html")))
 	h := newHub()
 	go h.run()
-	http.HandleFunc("/home", homeHandler)
-	http.Handle("/", wsHandler{h: h})
+	//http.HandleFunc(routerSet, tempHandler)
+	http.Handle(routerSet, wsHandler{h: h})
+	http.Handle("/", http.FileServer(http.Dir(htmlFilePath)))
 	if err := http.ListenAndServe(*ws_addr, nil); err != nil {
-		log.Fatal("ListenAndServe:", err)
+		log.Fatalf("ListenAndServe error %v , at ws_addr: %v", err, ws_addr)
+	}
+}
+
+// Test info
+// wsServerSet		use "/"
+// jsClientRouterSet	use "/home"
+// htmlFilePath		use "server/home.html"
+func Start_ws_server_Test(wsServerSet string, jsClientRouterSet string, htmlFilePath string) {
+	if "" == daemon || "" == port {
+		config := new(conf.Config)
+		config.InitConfig("conf/config.conf")
+		daemon = config.Read("ServerSet", "daemon")
+		port = config.Read("ServerSet", "port")
+	}
+	conf.White("\n====\nWebSocket Server Init with\t\t ")
+	conf.Green("ws://" + daemon + ":" + port + wsServerSet + "\n")
+	fmt.Println("\n====\nWebSocket Server Init with\t\t ws://" + daemon + ":" + port + wsServerSet)
+	conf.White("\n====\nWebSocket js client Init with\t\t ")
+	conf.Blue("http://" + daemon + ":" + port + jsClientRouterSet + "\n")
+	fmt.Println("\n====\nWebSocket js client Init with\t\t http://" + daemon + ":" + port + jsClientRouterSet)
+	ws_addr = flag.String("addr", daemon + ":" + port, "http service address")
+	flag.Parse()
+	homeTempl = template.Must(template.ParseFiles(filepath.Join(*assets, htmlFilePath)))
+	h := newHub()
+	go h.run()
+	http.HandleFunc(jsClientRouterSet, homeHandler)
+	http.Handle(wsServerSet, wsHandler{h: h})
+	if err := http.ListenAndServe(*ws_addr, nil); err != nil {
+		log.Fatalf("ListenAndServe error %v , at ws_addr: %v", err, ws_addr)
 	}
 }

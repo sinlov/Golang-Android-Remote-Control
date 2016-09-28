@@ -14,21 +14,26 @@ import (
 	"github.com/google/flatbuffers/go"
 )
 
-var cli_addr *string
+var (
+	cli_addr *string
+	daemon string
+	port string
+)
 
 func Input_cli() {
 	flag.Parse()
 	log.SetFlags(0)
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
-	config := new(conf.Config)
-	config.InitConfig("conf/config.conf")
-	daemon := config.Read("ServerSet", "daemon")
-	port := config.Read("ServerSet", "port")
+	if "" == daemon || "" == port {
+		config := new(conf.Config)
+		config.InitConfig("conf/config.conf")
+		daemon = config.Read("ServerSet", "daemon")
+		port = config.Read("ServerSet", "port")
+	}
 	cli_addr = flag.String("addr", daemon + ":" + port, "http service address")
 	u := url.URL{Scheme: "ws", Host: *cli_addr, Path: "/"}
 	log.Printf("connecting to %s", u.String())
-
 	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
 		log.Fatal("dial:", err)
@@ -57,15 +62,15 @@ func Input_cli() {
 		select {
 		case t := <-ticker.C:
 			fmt.Println("Post time string ", t.String())
-			//err := c.WriteMessage(websocket.TextMessage, []byte(t.String()))
-			//if err != nil {
-			//	log.Println("write String: ", err)
-			//	return
-			//}
+		//err := c.WriteMessage(websocket.TextMessage, []byte(t.String()))
+		//if err != nil {
+		//	log.Println("write String: ", err)
+		//	return
+		//}
 			builder := flatbuffers.NewBuilder(0)
 			menuBtn := builder.CreateString("3")
-			//homeBtn := builder.CreateString("1")
-			//time_str := builder.CreateString(t.String())
+		//homeBtn := builder.CreateString("1")
+		//time_str := builder.CreateString(t.String())
 			event.KeyEventStart(builder)
 			event.KeyEventAddKeyEvent(builder, menuBtn)
 			end := event.KeyEventEnd(builder)

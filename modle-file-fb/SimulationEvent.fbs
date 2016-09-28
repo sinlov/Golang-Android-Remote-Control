@@ -1,0 +1,34 @@
+namespace com.kf.android_remote_control.simulation.event;
+
+table EventList{
+    event : [Event];
+}
+
+table Event{
+    touch : [Touch];
+    swipe : [Swipe];
+    text : [Text];
+    keyEvent : [KeyEvent];
+}
+
+table Touch{
+    x : int(id: 0);
+    y : int(id: 1);
+}
+
+table Swipe{
+    fromX : int(id: 0);
+    fromY : int(id: 1);
+    toX : int(id: 2);
+    toY : int(id: 3);
+}
+
+table Text{
+    text : string;
+}
+
+table KeyEvent{
+    keyEvent : string;
+}
+
+root_type EventList;

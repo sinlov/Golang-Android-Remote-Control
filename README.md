@@ -2,6 +2,16 @@
 
 - just in develop!
 
+
+# Library
+
+```sh
+go get -u -v github.com/gorilla/websocket
+go get -u -v github.com/google/flatbuffers/go
+```
+
+https://github.com/gorilla/websocket
+
 # Debug
 
 Set config file `conf/config.conf`
@@ -34,7 +44,9 @@ go run Main.go
 
 ## Web
 
-http://youdaemon:yourport/home
+- Server Address will show in command
+- Web Client URL will show in command
+
 
 ## dark websocket or other client
 /connect ws://youdaemon:yourport
@@ -45,3 +57,18 @@ http://youdaemon:yourport/home
 ```sh
 go run cli.go
 ```
+
+# Use Video Player
+
+- jsmpeg.js is from https://github.com/phoboslab/jsmpeg
+
+- broadway js is from https://github.com/mbebenita/Broadway
+
+
+See in URL
+ 
+http://127.0.0.1:18080/h264/h264.html
+
+http://127.0.0.1:18080/mpeg1/mpeg1.html
+
+if you change [conf/config.conf] you must change daemon

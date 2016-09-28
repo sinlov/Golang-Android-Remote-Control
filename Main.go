@@ -6,12 +6,19 @@ import (
 	"log"
 	"net/http"
 	"os/exec"
+	//"com.sinlov/Golang-Android-Remote-Control/server"
+	"com.sinlov/Golang-Android-Remote-Control/wsVideoPlay"
 	"com.sinlov/Golang-Android-Remote-Control/server"
 )
 
 func main() {
-	server.Start_ws_server()
+	server.Start_ws_server_Test("/", "/home", "server/home.html")
 	//start_sever()
+	//start_h264()
+}
+
+func start_h264() {
+	wsVideoPlay.Start_h264()
 }
 
 func start_sever() {

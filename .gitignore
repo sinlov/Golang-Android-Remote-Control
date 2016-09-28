@@ -1,3 +1,7 @@
+### FlatBuffer template
+modle-file-fb/go/
+modle-file-fb/java/
+
 ### Go template
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
 *.o

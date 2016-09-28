@@ -4,8 +4,10 @@ type hub struct {
 	// 注册了的连接器
 	connections map[*connection]bool
 
-	// 从连接器中发入的信息
-	broadcast   chan []byte
+	// 消息类型
+	messageType chan int
+	// 从连接器中发入的各种信息
+	message     chan []byte
 
 	// 从连接器中注册请求
 	register    chan *connection
@@ -17,8 +19,9 @@ type hub struct {
 func newHub() *hub {
 	return &hub{
 		connections:        make(map[*connection]bool),
-		broadcast:                make(chan []byte),
-		register:                make(chan *connection),
+		message:make(chan []byte),
+		messageType: make(chan int),
+		register:        make(chan *connection),
 		unregister:        make(chan *connection),
 	}
 }
@@ -31,17 +34,24 @@ func (h *hub) run() {
 		case c := <-h.unregister:
 			if _, ok := h.connections[c]; ok {
 				delete(h.connections, c)
-				close(c.send)
+				close(c.message)
 			}
-		case m := <-h.broadcast:
+		case t := <-h.messageType:
 			for c := range h.connections {
 				select {
-				case c.send <- m:
-				default:
-					delete(h.connections, c)
-					close(c.send)
+				case c.messageType <- t:
 				}
 			}
+		case m := <-h.message:
+			for c := range h.connections {
+				select {
+				case c.message <- m:
+				default:
+					delete(h.connections, c)
+					close(c.message)
+				}
+			}
+
 		}
 	}
 }

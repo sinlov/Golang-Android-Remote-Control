@@ -1,0 +1,31 @@
+syntax = "proto3";
+package protobuf;
+message User {
+    int64 id = 1;
+    string email = 2;
+    string username = 3;
+    string nickname = 4;
+    string realname = 5;
+    string content = 6;
+    string avatar = 7;
+    string avatarLarge = 8;
+    string avatarMedium = 9;
+    string avatarSmall = 10;
+    int64 birth = 11;
+    int64 age = 12;
+    string school = 13;
+    int64 created = 14;
+    int64 updated = 15;
+    int64 lastSigninTime = 16;
+    string lastSigninIp = 17;
+    int64 topicTime = 18;
+    int64 topicCount = 19;
+    int64 topicLastNid = 20;
+    string topicLastNode = 21;
+    int64 replyTime = 22;
+    int64 replyCount = 23;
+    int64 replyLastTid = 24;
+    string replyLastTopic = 25;
+    int64 favoriteCount = 26;
+    string facebookuid = 27;
+}
