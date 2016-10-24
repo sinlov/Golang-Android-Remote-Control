@@ -9,13 +9,13 @@ import (
 
 type connection struct {
 	// websocket 连接器
-	ws          *websocket.Conn
+	ws         *websocket.Conn
 
-	messageType chan int
 	// 发送信息的缓冲 channel
-	message     chan []byte
+	messageMap chan map[int][]byte
+	//message     chan []byte
 	// The hub.
-	h           *hub
+	h          *hub
 }
 
 func (c *connection) reader() {
@@ -25,25 +25,28 @@ func (c *connection) reader() {
 		if err != nil {
 			break
 		}
-		c.h.message <- message
-		c.h.messageType <- messageType
+		mes := make(map[int][]byte)
+		mes[messageType] = message
+		c.h.messageMap <- mes
+		//c.h.message <- message
+		//c.h.messageType <- messageType
 	}
 	c.ws.Close()
 }
 
 func (c *connection) writer() {
-	for message := range c.message {
-		for messageType := range c.messageType {
-			switch messageType {
+	for message := range c.messageMap {
+		for key, value := range message {
+			switch key {
 			case websocket.BinaryMessage:
-				fmt.Println("writer binary message", message)
-				b_err := c.ws.WriteMessage(websocket.BinaryMessage, message)
+				fmt.Printf("messageType: %v, message %v\n", key, value)
+				b_err := c.ws.WriteMessage(websocket.BinaryMessage, value)
 				if b_err != nil {
 					break
 				}
 			case websocket.TextMessage:
-				fmt.Println("writer text message", message)
-				b_err := c.ws.WriteMessage(websocket.TextMessage, message)
+				fmt.Printf("messageType: %v, message %v\n", key, value)
+				b_err := c.ws.WriteMessage(websocket.TextMessage, value)
 				if b_err != nil {
 					break
 				}
@@ -82,7 +85,7 @@ func (wsh wsHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		return
 	}
-	c := &connection{message: make(chan []byte, 256), messageType:make(chan int, 256), ws: ws, h: wsh.h}
+	c := &connection{messageMap: make(chan map[int][]byte, 256), ws: ws, h: wsh.h}
 	c.h.register <- c
 	defer func() {
 		c.h.unregister <- c

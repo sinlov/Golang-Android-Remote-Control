@@ -11,8 +11,8 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"com.sinlov/Golang-Android-Remote-Control/conf"
 	"fmt"
+	"github.com/sinlov/golang_utils/cfg"
 )
 
 var (
@@ -39,8 +39,8 @@ const (
 
 func InitCommand(cmdPath string) {
 	cmdPath = cmdPath
-	config := new(conf.Config)
-	config.InitConfig("conf/config.conf")
+	config := new(cfg.Cfg)
+	config.InitCfg("conf/config.conf")
 	daemon := config.Read("ServerSet", "daemon")
 	port := config.Read("ServerSet", "port")
 	fmt.Println("You Command Init: ", daemon, ":", port)

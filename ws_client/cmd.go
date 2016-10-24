@@ -1,4 +1,4 @@
-package client
+package main
 
 import (
 	"log"
@@ -8,10 +8,10 @@ import (
 	"net/url"
 	"flag"
 	"github.com/gorilla/websocket"
-	"com.sinlov/Golang-Android-Remote-Control/conf"
 	"fmt"
 	"com.sinlov/Golang-Android-Remote-Control/event"
 	"github.com/google/flatbuffers/go"
+	"github.com/sinlov/golang_utils/cfg"
 )
 
 var (
@@ -20,14 +20,14 @@ var (
 	port string
 )
 
-func Input_cli() {
+func input_cli() {
 	flag.Parse()
 	log.SetFlags(0)
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
 	if "" == daemon || "" == port {
-		config := new(conf.Config)
-		config.InitConfig("conf/config.conf")
+		config :=new(cfg.Cfg)
+		config.InitCfg("conf/config.conf")
 		daemon = config.Read("ServerSet", "daemon")
 		port = config.Read("ServerSet", "port")
 	}

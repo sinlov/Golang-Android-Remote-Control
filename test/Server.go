@@ -1,13 +1,13 @@
 package test
 
 import (
-	"com.sinlov/Golang-Android-Remote-Control/conf"
 	"flag"
 	"fmt"
 	"github.com/gorilla/websocket"
 	"html/template"
 	"log"
 	"net/http"
+	"github.com/sinlov/golang_utils/cfg"
 )
 
 var Addr *string
@@ -17,8 +17,8 @@ var server_upgrader = websocket.Upgrader{CheckOrigin: func(r *http.Request) bool
 }}
 
 func InitServer() {
-	config := new(conf.Config)
-	config.InitConfig("conf/config.conf")
+	config := new(cfg.Cfg)
+	config.InitCfg("conf/config.conf")
 	daemon := config.Read("ServerSet", "daemon")
 	port := config.Read("ServerSet", "port")
 	fmt.Println("You Server Init: ", daemon, ":", port)

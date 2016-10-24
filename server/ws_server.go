@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"text/template"
 	"log"
-	"com.sinlov/Golang-Android-Remote-Control/conf"
 	"fmt"
 	"path/filepath"
 	"go/build"
+	"github.com/sinlov/golang_utils/cfg"
 )
 
 var (
@@ -44,8 +44,8 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 
 func Start_ws_server_by_router(routerSet string, htmlFilePath string) {
 	if "" == daemon || "" == port {
-		config := new(conf.Config)
-		config.InitConfig("conf/config.conf")
+		config := new(cfg.Cfg)
+		config.InitCfg("conf/config.conf")
 		daemon = config.Read("ServerSet", "daemon")
 		port = config.Read("ServerSet", "port")
 	}
@@ -68,16 +68,11 @@ func Start_ws_server_by_router(routerSet string, htmlFilePath string) {
 // htmlFilePath		use "server/home.html"
 func Start_ws_server_Test(wsServerSet string, jsClientRouterSet string, htmlFilePath string) {
 	if "" == daemon || "" == port {
-		config := new(conf.Config)
-		config.InitConfig("conf/config.conf")
+		config := new(cfg.Cfg)
+		config.InitCfg("conf/config.conf")
 		daemon = config.Read("ServerSet", "daemon")
 		port = config.Read("ServerSet", "port")
 	}
-	conf.White("\n====\nWebSocket Server Init with\t\t ")
-	conf.Green("ws://" + daemon + ":" + port + wsServerSet + "\n")
-	fmt.Println("\n====\nWebSocket Server Init with\t\t ws://" + daemon + ":" + port + wsServerSet)
-	conf.White("\n====\nWebSocket js client Init with\t\t ")
-	conf.Blue("http://" + daemon + ":" + port + jsClientRouterSet + "\n")
 	fmt.Println("\n====\nWebSocket js client Init with\t\t http://" + daemon + ":" + port + jsClientRouterSet)
 	ws_addr = flag.String("addr", daemon + ":" + port, "http service address")
 	flag.Parse()

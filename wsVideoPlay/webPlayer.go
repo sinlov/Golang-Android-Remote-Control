@@ -10,12 +10,12 @@ import (
 	"encoding/binary"
 	"golang.org/x/net/websocket"
 	"net/http"
-	"com.sinlov/Golang-Android-Remote-Control/conf"
+	"github.com/sinlov/golang_utils/cfg"
 )
 
 func Start_h264() {
-	config := new(conf.Config)
-	config.InitConfig("conf/config.conf")
+	config := new(cfg.Cfg)
+	config.InitCfg("conf/config.conf")
 	daemon := config.Read("ServerSet", "daemon")
 	port := config.Read("ServerSet", "port")
 	http_Dir := config.Read("ServerSet", "http_Dir")
@@ -31,8 +31,8 @@ func Start_h264() {
 
 func wsH264(ws *websocket.Conn) {
 	fmt.Printf("new socket\n")
-	config := new(conf.Config)
-	config.InitConfig("conf/config.conf")
+	config := new(cfg.Cfg)
+	config.InitCfg("conf/config.conf")
 	filePath := config.Read("FileSet", "file.testH264")
 	fmt.Println("wsH264 path", filePath)
 	//fi, err := os.Open("./test.h264")
@@ -89,8 +89,8 @@ func wsMpeg1(ws *websocket.Conn) {
 	buf[7] = 0xf0
 	websocket.Message.Send(ws, buf[:8])
 
-	config := new(conf.Config)
-	config.InitConfig("conf/config.conf")
+	config := new(cfg.Cfg)
+	config.InitCfg("conf/config.conf")
 	filePath := config.Read("FileSet", "file.testMpeg")
 	fmt.Println("mpeg path", filePath)
 	//fi, err := os.Open("./test.mpeg")
